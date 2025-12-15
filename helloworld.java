@@ -1,5 +1,16 @@
+import java.util.Scanner;
+
 public class helloworld{
     public static void main(String[] args){
-        System.out.print("Hello world");
+
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter your name: ");
+
+        String name = scanner.nextLine();
+
+        System.out.print("Hello:" + name);
+
+        scanner.close();
     }
 }
