@@ -1,0 +1,51 @@
+Package src;
+
+public class ExpenditureUseCase {
+    private ExpenditureRecordRepository expenditureRecordRepository;
+
+    public ExpenditureUseCase(ExpenditureRecordRepository expenditureRecordRepository) {
+        this.expenditureRecordRepository = expenditureRecordRepository;
+    }
+
+    public void execute(ExpenditureCommand command) throws PaymentMethodNotSupport {
+        // ...檢查付款方式是否支援...
+        throw new PaymentMethodNotSupport("請新增付款方式：");
+    }
+
+    public void execute(ExpenditureCommand command, boolean checkCategory) throws CatagoryNotSupport {
+        // 檢查分類是否支援
+        if (checkCategory) {
+            String category = command != null ? command.getCategory() : null;
+            if (category == null || category.isEmpty()) {
+                throw new CatagoryNotSupport("請新增消費類別：");
+            }
+        }
+        // 其他業務邏輯可補充
+        if (command != null && expenditureRecordRepository != null) {
+            expenditureRecordRepository.save(command);
+        }
+    }
+
+    public void execute(ExpenditureCommand command) {
+        // money 不可為負數
+        if (command == null || command.getMoney() < 0) {
+            return;
+        }
+        if (expenditureRecordRepository != null) {
+            expenditureRecordRepository.save(command);
+        }
+        // 可根據需求補充其他業務邏輯
+    }
+}
+
+class PaymentMethodNotSupport extends Exception {
+    public PaymentMethodNotSupport(String message) {
+        super(message);
+    }
+}
+
+class CatagoryNotSupport extends Exception {
+    public CatagoryNotSupport(String message) {
+        super(message);
+    }
+}

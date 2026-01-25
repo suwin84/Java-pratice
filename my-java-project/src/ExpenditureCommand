@@ -1,0 +1,67 @@
+import java.io.File;
+import java.util.List;
+
+public class ExpenditureCommand {
+    private int money;
+    private User user;
+    private List<String> category;
+    private List<String> paymentMethod;
+    private String remark;
+    private File photo;
+
+    public int getMoney() {
+        return money;
+    }
+
+    public void setMoney(int money) {
+        this.money = money;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setCategory(List<String> category) {
+        this.category = category;
+    }
+
+    // 這裡回傳第一個分類
+    public String getCategory() {
+        if (category != null && !category.isEmpty()) {
+            return category.get(0);
+        }
+        return null;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        // 將單一付款方式包裝成 List
+        this.paymentMethod = List.of(paymentMethod);
+    }
+
+    public String getPaymentMethod() {
+        if (paymentMethod != null && !paymentMethod.isEmpty()) {
+            return paymentMethod.get(0);
+        }
+        return null;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setPhoto(File photo) {
+        this.photo = photo;
+    }
+
+    public File getPhoto() {
+        return photo;
+    }
+}
