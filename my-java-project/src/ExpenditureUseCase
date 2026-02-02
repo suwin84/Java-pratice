@@ -1,23 +1,51 @@
 Package src;
 
+import src.ExpenditureCommand;
+import src.Category;
+import src.CategoryRepository;
+import src.PaymentMethod;
+import src.PaymentMethodRepository;
+
 public class ExpenditureUseCase {
     private ExpenditureRecordRepository expenditureRecordRepository;
-
-    public ExpenditureUseCase(ExpenditureRecordRepository expenditureRecordRepository) {
+    private CategoryRepository categoryRepository;
+    private PaymentMethodRepository paymentMethodRepository;
+    
+    public ExpenditureUseCase(ExpenditureRecordRepository expenditureRecordRepository,CategoryRepository categoryRepository,PaymentMethodRepository paymentMethodRepository) {
         this.expenditureRecordRepository = expenditureRecordRepository;
+        this.categoryRepository = categoryRepository;
+        this.paymentMethodRepository = paymentMethodRepository;
     }
 
-    public void execute(ExpenditureCommand command) throws PaymentMethodNotSupport {
-        // ...檢查付款方式是否支援...
-        throw new PaymentMethodNotSupport("請新增付款方式：");
+    public void execute(ExpenditureCommand command){
+        
+        validateInput(command);
+        
+        // 檢查並自動建立不存在的付款方式
+        PaymentMethodNotSupport(command);
+
+        // 檢查並自動建立不存在的分類
+        CategoryNotSupport(command);
     }
 
-    public void execute(ExpenditureCommand command, boolean checkCategory) throws CatagoryNotSupport {
-        // 檢查分類是否支援
-        if (checkCategory) {
-            String category = command != null ? command.getCategory() : null;
-            if (category == null || category.isEmpty()) {
-                throw new CatagoryNotSupport("請新增消費類別：");
+    private void PaymentMethodNotSupport(ExpenditureCommand command) {
+        // 檢查付款方式是否存在，不存在則自動新增
+        if (command != null) {
+            String paymentMethod = command.getPaymentMethod();
+            if (paymentMethod != null && !paymentMethod.isEmpty()) {
+                if (paymentMethodRepository != null && !paymentMethodRepository.exists(paymentMethod)) {
+                    paymentMethodRepository.save(paymentMethod);
+                }
+            }
+        }
+    }
+
+    private void CategoryNotSupport(ExpenditureCommand command) {
+        // 檢查分類是否存在，不存在則自動新增
+        if (command != null && command.getCategory() != null && categoryRepository != null) {
+            String category = command.getCategory();
+            if (!categoryRepository.exists(category)) {
+            categoryRepository.save(category);
             }
         }
         // 其他業務邏輯可補充
@@ -26,26 +54,10 @@ public class ExpenditureUseCase {
         }
     }
 
-    public void execute(ExpenditureCommand command) {
+    private void validateInput(ExpenditureCommand command) {
         // money 不可為負數
         if (command == null || command.getMoney() < 0) {
-            return;
+            throw new IllegalArgumentException("支出金額不可為負數");
         }
-        if (expenditureRecordRepository != null) {
-            expenditureRecordRepository.save(command);
-        }
-        // 可根據需求補充其他業務邏輯
-    }
-}
-
-class PaymentMethodNotSupport extends Exception {
-    public PaymentMethodNotSupport(String message) {
-        super(message);
-    }
-}
-
-class CatagoryNotSupport extends Exception {
-    public CatagoryNotSupport(String message) {
-        super(message);
     }
 }
