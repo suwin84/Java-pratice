@@ -1,0 +1,14 @@
+version: '3.1'
+services:
+  northwind_mysql:
+    image: mysql:8.0
+    container_name: northwind_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: accountapps
+      MYSQL_USER: student
+      MYSQL_PASSWORD: student123
+    ports:
+      - "3306:3306"
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always

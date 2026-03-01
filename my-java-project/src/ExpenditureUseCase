@@ -34,7 +34,7 @@ public class ExpenditureUseCase {
             String paymentMethod = command.getPaymentMethod();
             if (paymentMethod != null && !paymentMethod.isEmpty()) {
                 if (paymentMethodRepository != null && !paymentMethodRepository.exists(paymentMethod)) {
-                    paymentMethodRepository.save(paymentMethod);
+                    paymentMethodRepository.save(new PaymentMethod(paymentMethod));
                 }
             }
         }
@@ -45,7 +45,7 @@ public class ExpenditureUseCase {
         if (command != null && command.getCategory() != null && categoryRepository != null) {
             String category = command.getCategory();
             if (!categoryRepository.exists(category)) {
-            categoryRepository.save(category);
+            categoryRepository.save(new Category(category));
             }
         }
         // 其他業務邏輯可補充
