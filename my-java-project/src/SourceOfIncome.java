@@ -1,0 +1,31 @@
+﻿package com.example;
+
+public class SourceOfIncome {
+    private String name;
+    private String icon;
+
+    public SourceOfIncome(String name) {
+        this.name = name;
+    }
+
+    public SourceOfIncome(String name, String icon) {
+        this.name = name;
+        this.icon = icon;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+}
