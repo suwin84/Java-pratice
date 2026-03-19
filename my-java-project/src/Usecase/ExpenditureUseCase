@@ -1,0 +1,59 @@
+package Usecase;
+
+import Command.ExpenditureCommand;
+import Model.Category;
+import Model.PaymentMethod;
+import Repository.CategoryRepository;
+import Repository.PaymentMethodRepository;
+import Repository.ExpenditureRecordRepository;
+
+public class ExpenditureUseCase {
+    private ExpenditureRecordRepository expenditureRecordRepository;
+    private CategoryRepository categoryRepository;
+    private PaymentMethodRepository paymentMethodRepository;
+    
+    public ExpenditureUseCase(ExpenditureRecordRepository expenditureRecordRepository,CategoryRepository categoryRepository,PaymentMethodRepository paymentMethodRepository) {
+        this.expenditureRecordRepository = expenditureRecordRepository;
+        this.categoryRepository = categoryRepository;
+        this.paymentMethodRepository = paymentMethodRepository;
+    }
+
+    public void execute(ExpenditureCommand command){
+        
+        validateInput(command);
+        
+        // 檢查並自動建立不存在的付款方式
+        PaymentMethodNotSupport(command);
+
+        // 檢查並自動建立不存在的分類
+        CategoryNotSupport(command);
+    }
+
+    private void PaymentMethodNotSupport(ExpenditureCommand command) {
+        // 檢查付款方式是否存在，不存在則自動新增
+        if (command != null) {
+            String paymentMethod = command.getPaymentMethod();
+            if (paymentMethod != null && !paymentMethod.isEmpty()) {
+                    paymentMethodRepository.save(new PaymentMethod(paymentMethod));
+                }
+            }
+        }
+    }
+
+    private void CategoryNotSupport(ExpenditureCommand command) {
+        // 檢查分類是否存在，不存在則自動新增
+        if (command != null) {
+            String category = command.getCategory();
+            if (!categoryRepository.exists(category)) {
+            categoryRepository.save(new Category(category));
+            }
+        }
+    }
+
+    private void validateInput(ExpenditureCommand command) {
+        // money 不可為負數
+        if (command == null || command.getMoney() < 0) {
+            throw new IllegalArgumentException("支出金額不可為負數");
+        }
+    }
+}
