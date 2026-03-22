@@ -1,0 +1,1 @@
+public static final String DB_URL = "jdbc:mysql://localhost:3306/accounting_app_db?useSSL=false&serverTimezone=UTC";
